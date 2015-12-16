@@ -12,3 +12,6 @@ description = """
 A native-rust implementation of an Effect monad, inspired by PureScript's EFF
 Monad.
 """
+
+[[example]]
+name = "hello_goodbye"
