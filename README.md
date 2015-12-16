@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mcoffin/rust-effect-monad.svg?branch=master)](https://travis-ci.org/mcoffin/rust-effect-monad) [![](http://meritbadge.herokuapp.com/rust-effect-monad)](https://crates.io/crates/rust-effect-monad)
+[![Build Status](https://travis-ci.org/mcoffin/rust-effect-monad.svg?branch=master)](https://travis-ci.org/mcoffin/rust-effect-monad) [![](http://meritbadge.herokuapp.com/effect-monad)](https://crates.io/crates/effect-monad)
 
 # effect-monad
 
