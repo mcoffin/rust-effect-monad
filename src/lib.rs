@@ -1,7 +1,12 @@
 //! This module contains Purescript-inspired effects monads for rust
+//!
+//! Here, an effect is defined an evaluatable function.
 #![feature(fn_traits, unboxed_closures)]
 
-/// Helper enum for acting as a resolve function
+/// Helper enum for acting as a resolve function.
+///
+/// Ideally, we would use a closure instead of this type, but this type exists
+/// as a workaround alternative to avoid using boxed closures
 pub enum ResolveFn<T> {
     Const(T),
 }
@@ -35,6 +40,7 @@ pub trait EffectMonad<A>: Sized {
     /// ```rust
     /// effectMonad.bind(|_| someOtherEffectMonad);
     /// ```
+    #[inline(always)]
     fn bind_ignore_contents<B, Eb>(self, eb: Eb) -> BoundEffect<Self, ResolveFn<Eb>>
         where Eb: FnOnce() -> B,
     {
@@ -45,6 +51,7 @@ pub trait EffectMonad<A>: Sized {
 impl<T, A> EffectMonad<A> for T
     where T: FnOnce() -> A,
 {
+    #[inline(always)]
     fn bind<B, Eb, F>(self, f: F) -> BoundEffect<Self, F>
         where Eb: FnOnce() -> B,
               F: FnOnce(A) -> Eb,
