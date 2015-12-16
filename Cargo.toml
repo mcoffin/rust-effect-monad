@@ -1,0 +1,4 @@
+[package]
+name = "effect-monad"
+version = "0.1.0"
+authors = ["Matt Coffin <mcoffin13@gmail.com>"]
