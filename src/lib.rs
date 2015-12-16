@@ -26,6 +26,15 @@ pub trait EffectMonad<A>: Sized {
     fn bind<B, Eb, F>(self, f: F) -> BoundEffect<Self, F>
         where Eb: FnOnce() -> B,
               F: FnOnce(A) -> Eb;
+
+    /// Sequentially composes the two effects, while ignoring the return values
+    /// of the effects. Similar to the `>>` function in Haskell, but without
+    /// returning the value of the second Monad.
+    ///
+    /// Shorthand for
+    /// ```rust
+    /// effectMonad.bind(|_| someOtherEffectMonad);
+    /// ```
     fn bind_ignore_contents<B, Eb>(self, eb: Eb) -> BoundEffect<Self, ResolveFn<Eb>>
         where Eb: FnOnce() -> B,
     {
@@ -44,7 +53,9 @@ impl<T, A> EffectMonad<A> for T
     }
 }
 
-/// A struct representing two bound effects
+/// A struct representing two bound effects. Ideally, we would be able to a
+/// closure here, but that's not possible without returning a boxed version of
+/// the closure, which we don't want to do.
 pub struct BoundEffect<Ea, F> {
     ea: Ea,
     f: F,
