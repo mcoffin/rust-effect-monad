@@ -3,6 +3,15 @@
 //! Here, an effect is defined an evaluatable function.
 #![feature(fn_traits, unboxed_closures)]
 
+macro_rules! effect_map {
+    ( $e:expr ) => {
+        move || $e
+    };
+    ( $b:block ) => {
+        move || $b
+    };
+}
+
 /// Helper enum for acting as a resolve function.
 ///
 /// Ideally, we would use a closure instead of this type, but this type exists
@@ -21,6 +30,13 @@ impl<T, Args> FnOnce<Args> for ResolveFn<T> {
         match self {
             Const(v) => v,
         }
+    }
+}
+
+impl<T> From<T> for ResolveFn<T> {
+    fn from(v: T) -> Self {
+        use ResolveFn::Const;
+        Const(v)
     }
 }
 
@@ -44,7 +60,7 @@ pub trait EffectMonad<A>: Sized {
     fn bind_ignore_contents<B, Eb>(self, eb: Eb) -> BoundEffect<Self, ResolveFn<Eb>>
         where Eb: FnOnce() -> B,
     {
-        self.bind(ResolveFn::Const(eb))
+        self.bind(eb.into())
     }
 }
 
@@ -133,6 +149,57 @@ mod public_test {
             }
         })();
         assert_eq!(x, 42);
+    }
+
+    #[test]
+    fn println_can_be_mapped_as_effect() {
+        effect_map!(println!("hello")).bind_ignore_contents(effect_map!(println!("goodbye")))();
+    }
+
+    #[test]
+    fn effect_map_performs_effect() {
+        let mut x: isize = 0;
+        {
+            let px = &mut x;
+            effect_map!(*px += 1)();
+        }
+        assert_eq!(x, 1);
+    }
+
+    #[test]
+    fn effect_can_implicitly_borrow() {
+        let mut x = 1;
+        {
+            (|| {
+                x += 5;
+            })();
+        }
+        assert_eq!(x, 6);
+    }
+
+    #[test]
+    fn effect_map_compiles_block() {
+        let mut x: isize =  0;
+        {
+            let px = &mut x;
+            effect_map!({
+                *px = 42;
+            })()
+        }
+        assert_eq!(x, 42);
+    }
+
+    #[test]
+    fn effect_monad_bind_safely_chains_state() {
+        let mut x: isize = 0;
+        {
+            let px = &mut x;
+            (effect_map!({
+                *px = 6;
+                px
+            })).bind(|px| effect_map!(*px += 1))();
+        }
+        assert_eq!(x, 7);
     }
 }
 
