@@ -13,5 +13,8 @@ A native-rust implementation of an Effect monad, inspired by PureScript's EFF
 Monad.
 """
 
+[features]
+unstable = []
+
 [[example]]
 name = "hello_goodbye"
