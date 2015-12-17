@@ -1,7 +1,12 @@
 //! This module contains Purescript-inspired effects monads for rust
 //!
 //! Here, an effect is defined an evaluatable function.
+#![no_std]
 #![feature(fn_traits, unboxed_closures)]
+
+#[cfg(test)]
+#[macro_use]
+extern crate std;
 
 macro_rules! effect_map {
     ( $e:expr ) => {
