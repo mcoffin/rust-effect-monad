@@ -8,6 +8,7 @@
 #[macro_use]
 extern crate std;
 
+#[macro_export]
 macro_rules! effect_map {
     ( $e:expr ) => {
         move || $e
