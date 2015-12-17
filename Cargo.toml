@@ -1,6 +1,6 @@
 [package]
 name = "effect-monad"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Matt Coffin <mcoffin13@gmail.com>"]
 license = "MIT"
 readme = "README.md"
